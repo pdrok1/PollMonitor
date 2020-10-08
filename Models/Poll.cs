@@ -16,9 +16,7 @@ namespace PollMonitor.Models
         public string QuestionText { get; set; }
 
         [Required]
-        public bool CanMultiOption { get; set; }
-
-        //public bool CanEditVote { get; set; }
+        public int SelectableOptionsCount { get; set; }
 
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public DateTime CloseDate { get; set; } // It is open when value is null on data source

@@ -22,6 +22,7 @@ namespace PollMonitor.Models
         [Required]
         public string PollOptionText { get; set; }
 
-        public int PollOptionCount { get; set; } = 0;
+        [Required]
+        public int PollOptionVoteCount { get; set; } = 0;
     }
 }

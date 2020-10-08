@@ -12,6 +12,6 @@ namespace PollMonitor.Models
         [Required]
         [Column("RegisterDate")]
         [Display(Name = "Register Date")]
-        public DateTime RegisterDate { get; set; } = DateTime.Now;
+        public DateTime RegisterDate { get; } = DateTime.Now;
     }
 }

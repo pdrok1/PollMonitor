@@ -26,18 +26,18 @@ namespace PollMonitor.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Alias")
+                    b.Property<DateTime>("CloseDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatorUserIp")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("CanMultiVote")
-                        .HasColumnType("bit");
+                    b.Property<string>("QuestionText")
+                        .HasColumnType("nvarchar(200)")
+                        .HasMaxLength(200);
 
-                    b.Property<DateTime?>("CloseDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("RegisterDate")
-                        .HasColumnName("RegisterDate")
-                        .HasColumnType("datetime2");
+                    b.Property<int>("SelectableOptionsCount")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -46,23 +46,18 @@ namespace PollMonitor.Migrations
 
             modelBuilder.Entity("PollMonitor.Models.PollOption", b =>
                 {
-                    b.Property<int>("PollOptionId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<long>("PollOptionId")
+                        .HasColumnType("bigint");
 
                     b.Property<long?>("PollId")
                         .HasColumnType("bigint");
 
-                    b.Property<int>("PollOptionCount")
-                        .HasColumnType("int");
-
                     b.Property<string>("PollOptionText")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("RegisterDate")
-                        .HasColumnName("RegisterDate")
-                        .HasColumnType("datetime2");
+                    b.Property<int>("PollOptionVoteCount")
+                        .HasColumnType("int");
 
                     b.HasKey("PollOptionId");
 
@@ -73,20 +68,18 @@ namespace PollMonitor.Migrations
 
             modelBuilder.Entity("PollMonitor.Models.Vote", b =>
                 {
-                    b.Property<string>("Ip")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<long>("VoteId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<long?>("PollId")
+                    b.Property<long>("PollId")
                         .HasColumnType("bigint");
 
-                    b.Property<int>("PollOption")
+                    b.Property<int>("PollOptions")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("RegisterDate")
-                        .HasColumnName("RegisterDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Ip");
+                    b.HasKey("VoteId");
 
                     b.HasIndex("PollId");
 
@@ -104,7 +97,9 @@ namespace PollMonitor.Migrations
                 {
                     b.HasOne("PollMonitor.Models.Poll", "Poll")
                         .WithMany()
-                        .HasForeignKey("PollId");
+                        .HasForeignKey("PollId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

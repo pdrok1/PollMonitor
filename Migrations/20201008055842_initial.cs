@@ -13,10 +13,10 @@ namespace PollMonitor.Migrations
                 {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    RegisterDate = table.Column<DateTime>(nullable: false),
-                    Alias = table.Column<string>(nullable: true),
-                    CanMultiVote = table.Column<bool>(nullable: false),
-                    CloseDate = table.Column<DateTime>(nullable: true)
+                    QuestionText = table.Column<string>(maxLength: 200, nullable: true),
+                    SelectableOptionsCount = table.Column<int>(nullable: false),
+                    CloseDate = table.Column<DateTime>(nullable: false),
+                    CreatorUserIp = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -27,12 +27,10 @@ namespace PollMonitor.Migrations
                 name: "PollOptions",
                 columns: table => new
                 {
-                    PollOptionId = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    RegisterDate = table.Column<DateTime>(nullable: false),
+                    PollOptionId = table.Column<long>(nullable: false),
                     PollId = table.Column<long>(nullable: true),
-                    PollOptionText = table.Column<string>(nullable: true),
-                    PollOptionCount = table.Column<int>(nullable: false)
+                    PollOptionText = table.Column<string>(nullable: false),
+                    PollOptionVoteCount = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -49,20 +47,20 @@ namespace PollMonitor.Migrations
                 name: "Votes",
                 columns: table => new
                 {
-                    Ip = table.Column<string>(nullable: false),
-                    RegisterDate = table.Column<DateTime>(nullable: false),
-                    PollId = table.Column<long>(nullable: true),
-                    PollOption = table.Column<int>(nullable: false)
+                    VoteId = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PollId = table.Column<long>(nullable: false),
+                    PollOptions = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Votes", x => x.Ip);
+                    table.PrimaryKey("PK_Votes", x => x.VoteId);
                     table.ForeignKey(
                         name: "FK_Votes_Polls_PollId",
                         column: x => x.PollId,
                         principalTable: "Polls",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(

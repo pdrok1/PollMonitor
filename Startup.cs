@@ -50,7 +50,6 @@ namespace PollMonitor
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-                endpoints.MapControllerRoute("default", "api/{controller=Poll}/{action=GetActivePolls}");
             });
         }
 
