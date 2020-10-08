@@ -13,7 +13,7 @@ namespace PollMonitor.Migrations
                 {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    QuestionText = table.Column<string>(maxLength: 200, nullable: true),
+                    QuestionText = table.Column<string>(maxLength: 200, nullable: false),
                     SelectableOptionsCount = table.Column<int>(nullable: false),
                     CloseDate = table.Column<DateTime>(nullable: false),
                     CreatorUserIp = table.Column<string>(nullable: true)
@@ -27,34 +27,37 @@ namespace PollMonitor.Migrations
                 name: "PollOptions",
                 columns: table => new
                 {
-                    PollOptionId = table.Column<long>(nullable: false),
-                    PollId = table.Column<long>(nullable: true),
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PollId = table.Column<long>(nullable: false),
+                    PollOptionId = table.Column<int>(nullable: false),
                     PollOptionText = table.Column<string>(nullable: false),
                     PollOptionVoteCount = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PollOptions", x => x.PollOptionId);
+                    table.PrimaryKey("PK_PollOptions", x => x.Id);
                     table.ForeignKey(
                         name: "FK_PollOptions_Polls_PollId",
                         column: x => x.PollId,
                         principalTable: "Polls",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Votes",
                 columns: table => new
                 {
-                    VoteId = table.Column<long>(nullable: false)
+                    Id = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    OriginIp = table.Column<string>(maxLength: 40, nullable: false),
                     PollId = table.Column<long>(nullable: false),
                     PollOptions = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Votes", x => x.VoteId);
+                    table.PrimaryKey("PK_Votes", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Votes_Polls_PollId",
                         column: x => x.PollId,

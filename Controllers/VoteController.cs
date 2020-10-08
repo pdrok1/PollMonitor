@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.WebEncoders.Testing;
 using PollMonitor.Repository;
 using PollMonitor.Models;
 
@@ -17,7 +16,7 @@ namespace PollMonitor.Controllers
 
         private readonly ApplicationDbContext _database;
 
-        public VoteController(ApplicationDbContext database) // SQLServer service DI
+        public VoteController(ApplicationDbContext database) // SQLServer EntityFramework service DI
         {
             _database = database;
         }
@@ -32,18 +31,24 @@ namespace PollMonitor.Controllers
             if (poll == null)
                 return NotFound();
 
+            // check if poll is inactive
+            if (poll.CloseDate < DateTime.Now)
+                // redirect to poll options and results if it is closed
+                return RedirectPermanent("/api/poll/" + id.ToString());
+
             // check if already voted on this poll
             Vote vote = _database.Votes.FirstOrDefault( (v) =>
-                 v.Poll.Id == id && v.OriginIpAddress.Equals(Request.HttpContext.Connection.RemoteIpAddress));
+                 v.Poll.Id == id && v.OriginIp.Equals(Request.HttpContext.Connection.RemoteIpAddress));
             if (vote != null)
                 return BadRequest("Your vote for this poll is already computed.");
 
-            // validate if surpasses poll.SelectableOptionsCount limit
+            // validate if surpasses poll.SelectableOptionsCount limits
+            if (options.Count < 1)
+                return BadRequest("A vote should have at least one option selected");
+
             if ( options.Count > poll.SelectableOptionsCount )
                 return BadRequest($"This poll is set to receive at maximum {poll.SelectableOptionsCount} selected option" + (poll.SelectableOptionsCount > 1?"s":"") + ".");
 
-            if (options.Count < 1)
-                return BadRequest("A vote should have at least one option selected");
             // validate poll options caught on request
             var choosableOptions = _database.PollOptions.Where( (po) => po.Poll.Id == id );
             foreach (var o in options)
@@ -55,17 +60,16 @@ namespace PollMonitor.Controllers
                 pollOption.PollOptionVoteCount++;
                 _database.PollOptions.Update(pollOption);
             }
-            _database.SaveChanges();
 
             // log user selected options
-
             vote = new Vote()
             {
                 Poll = poll,
-                OriginIpAddress = Request.HttpContext.Connection.RemoteIpAddress,
+                OriginIp = Request.HttpContext.Connection.RemoteIpAddress.ToString(),
                 PollOptions = GetBitwiseOptionByteArray(options)
             };
             _database.Votes.Add(vote);
+            _database.SaveChanges();
 
             return Ok("Vote computed.");
         }
@@ -76,7 +80,20 @@ namespace PollMonitor.Controllers
             foreach (var pair in ops) 
             {
                 if(pair.Value)
-                    selectedOptions |= 2 ^ pair.Key;
+                    selectedOptions |= 2 ^ (pair.Key - 1);
+                /* 
+                 * It writes inside the Int32 bits the choosen options in its relative position, so Ex.: if I voted options 1, 2 and 5, assuming
+                 * the machines processor is Big-Endian, it would write 
+                 * 0000 0000  0000 0000  0000 0000  0000 0001 = 2 ^ (1 - 1) 
+                 *                 logical or
+                 * 0000 0000  0000 0000  0000 0000  0000 0010 = 2 ^ (2 - 1)
+                 *                 logical or
+                 * 0000 0000  0000 0000  0000 0000  0001 0000 = 2 ^ (5 - 1)
+                 *                     =
+                 * 0000 0000  0000 0000  0000 0000  0001 0011 = 1 + 2 + 16 = 19
+                 * I think it's better for performance to actually change each bit instead of using power functions, but I couldn't find a safer 
+                 * way to control computer Endianness.
+                */
             }
             return selectedOptions;
         }

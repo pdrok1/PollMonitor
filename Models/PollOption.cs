@@ -1,23 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace PollMonitor.Models
 {
     public class PollOption : AbstractModel
     {
         [Index]
-        [Key, Column(Order = 0)]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public Poll Poll { get; set; }
+        [Key]
+        public long Id { get; set; } // Entity identity field
 
         [Index]
-        [Key, Column(Order = 1)]
+        [Required]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public long PollOptionId { get; set; }
+        public Poll Poll { get; set; } // Foreign key
+
+        
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Required]
+        [Range(1,30)]
+        public int PollOptionId { get; set; } // Poll Option indentifier
 
         [Required]
         public string PollOptionText { get; set; }

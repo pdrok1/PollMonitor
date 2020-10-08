@@ -33,6 +33,7 @@ namespace PollMonitor.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("QuestionText")
+                        .IsRequired()
                         .HasColumnType("nvarchar(200)")
                         .HasMaxLength(200);
 
@@ -46,11 +47,16 @@ namespace PollMonitor.Migrations
 
             modelBuilder.Entity("PollMonitor.Models.PollOption", b =>
                 {
-                    b.Property<long>("PollOptionId")
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<long>("PollId")
                         .HasColumnType("bigint");
 
-                    b.Property<long?>("PollId")
-                        .HasColumnType("bigint");
+                    b.Property<int>("PollOptionId")
+                        .HasColumnType("int");
 
                     b.Property<string>("PollOptionText")
                         .IsRequired()
@@ -59,7 +65,7 @@ namespace PollMonitor.Migrations
                     b.Property<int>("PollOptionVoteCount")
                         .HasColumnType("int");
 
-                    b.HasKey("PollOptionId");
+                    b.HasKey("Id");
 
                     b.HasIndex("PollId");
 
@@ -68,10 +74,15 @@ namespace PollMonitor.Migrations
 
             modelBuilder.Entity("PollMonitor.Models.Vote", b =>
                 {
-                    b.Property<long>("VoteId")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("OriginIp")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(40)")
+                        .HasMaxLength(40);
 
                     b.Property<long>("PollId")
                         .HasColumnType("bigint");
@@ -79,7 +90,7 @@ namespace PollMonitor.Migrations
                     b.Property<int>("PollOptions")
                         .HasColumnType("int");
 
-                    b.HasKey("VoteId");
+                    b.HasKey("Id");
 
                     b.HasIndex("PollId");
 
@@ -90,7 +101,9 @@ namespace PollMonitor.Migrations
                 {
                     b.HasOne("PollMonitor.Models.Poll", "Poll")
                         .WithMany()
-                        .HasForeignKey("PollId");
+                        .HasForeignKey("PollId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("PollMonitor.Models.Vote", b =>
