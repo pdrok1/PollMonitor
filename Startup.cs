@@ -49,7 +49,10 @@ namespace PollMonitor
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers();
+                endpoints.MapControllers(); endpoints.MapGet("/", async context =>
+                {
+                    context.Response.Redirect("/api/poll/active");
+                });
             });
         }
 

@@ -10,7 +10,7 @@ using PollMonitor.Repository;
 namespace PollMonitor.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20201008213414_initial")]
+    [Migration("20201009072149_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -38,6 +38,9 @@ namespace PollMonitor.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(200)")
                         .HasMaxLength(200);
+
+                    b.Property<DateTime>("RegisterDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("SelectableOptionsCount")
                         .HasColumnType("int");
@@ -67,6 +70,9 @@ namespace PollMonitor.Migrations
                     b.Property<int>("PollOptionVoteCount")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("RegisterDate")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("Id");
 
                     b.HasIndex("PollId");
@@ -91,6 +97,9 @@ namespace PollMonitor.Migrations
 
                     b.Property<int>("PollOptions")
                         .HasColumnType("int");
+
+                    b.Property<DateTime>("RegisterDate")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 

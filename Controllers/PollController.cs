@@ -28,10 +28,17 @@ namespace PollMonitor.Controllers
         [HttpGet("{id}")]
         public IActionResult GetPollById([FromRoute] long id)
         {
-            Poll poll = _database.Polls.Find(id);
-            if (poll == null)
-                return NotFound();
-            return new ContentResult { Content = GetPollJsonWithOptions(poll).ToString(Formatting.None), ContentType = "application/json" };
+            try
+            {
+                Poll poll = _database.Polls.Find(id);
+                if (poll == null)
+                    return NotFound();
+                return new ContentResult { Content = GetPollJsonWithOptions(poll).ToString(Formatting.None), ContentType = "application/json" };
+            }
+            catch (Exception e) 
+            {
+                return new ContentResult { Content = e.StackTrace.ToString() };
+            }
         }
 
 

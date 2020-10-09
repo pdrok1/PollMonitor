@@ -38,7 +38,7 @@ namespace PollMonitor.Controllers
 
             // check if already voted on this poll
             Vote vote = _database.Votes.FirstOrDefault( (v) =>
-                 v.Poll.Id == id && v.OriginIp.Equals(Request.HttpContext.Connection.RemoteIpAddress));
+                 v.Poll.Id == id && v.OriginIp.Equals(Request.HttpContext.Connection.RemoteIpAddress.ToString()));
             if (vote != null)
                 return BadRequest("Your vote for this poll is already computed.");
 

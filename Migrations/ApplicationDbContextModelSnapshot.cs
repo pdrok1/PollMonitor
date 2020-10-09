@@ -37,6 +37,9 @@ namespace PollMonitor.Migrations
                         .HasColumnType("nvarchar(200)")
                         .HasMaxLength(200);
 
+                    b.Property<DateTime>("RegisterDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("SelectableOptionsCount")
                         .HasColumnType("int");
 
@@ -65,6 +68,9 @@ namespace PollMonitor.Migrations
                     b.Property<int>("PollOptionVoteCount")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("RegisterDate")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("Id");
 
                     b.HasIndex("PollId");
@@ -89,6 +95,9 @@ namespace PollMonitor.Migrations
 
                     b.Property<int>("PollOptions")
                         .HasColumnType("int");
+
+                    b.Property<DateTime>("RegisterDate")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 

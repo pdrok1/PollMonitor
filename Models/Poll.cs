@@ -9,6 +9,7 @@ namespace PollMonitor.Models
     [JsonObject(NamingStrategyType = typeof(CamelCaseNamingStrategy))]
     public class Poll : AbstractModel
     {
+
         [Key]
         public long Id { get; set; }
 

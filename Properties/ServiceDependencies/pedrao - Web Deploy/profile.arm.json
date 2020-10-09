@@ -21,7 +21,7 @@
     },
     "resourceName": {
       "type": "string",
-      "defaultValue": "PollMonitor20201006172727",
+      "defaultValue": "pedrao",
       "metadata": {
         "description": "Name of the main resource to be created by this template."
       }

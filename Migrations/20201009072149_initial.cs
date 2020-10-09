@@ -13,6 +13,7 @@ namespace PollMonitor.Migrations
                 {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    RegisterDate = table.Column<DateTime>(nullable: false),
                     QuestionText = table.Column<string>(maxLength: 200, nullable: false),
                     SelectableOptionsCount = table.Column<int>(nullable: false),
                     CloseDate = table.Column<DateTime>(nullable: false),
@@ -29,6 +30,7 @@ namespace PollMonitor.Migrations
                 {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    RegisterDate = table.Column<DateTime>(nullable: false),
                     PollId = table.Column<long>(nullable: false),
                     PollOptionId = table.Column<int>(nullable: false),
                     PollOptionText = table.Column<string>(nullable: false),
@@ -51,6 +53,7 @@ namespace PollMonitor.Migrations
                 {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    RegisterDate = table.Column<DateTime>(nullable: false),
                     OriginIp = table.Column<string>(maxLength: 40, nullable: false),
                     PollId = table.Column<long>(nullable: false),
                     PollOptions = table.Column<int>(nullable: false)
